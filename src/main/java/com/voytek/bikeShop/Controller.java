@@ -11,7 +11,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/api/recipe")
+@RequestMapping("/api/bikes")
 public class Controller {
 
 
@@ -31,10 +31,16 @@ public class Controller {
         public Optional<Bikes> getBike(@PathVariable long id) {
             if (!bikeRepository.existsById(id)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Recipe not found for id = " + id);
+                        "Bike not found for id = " + id);
             }
             return bikeRepository.findById(id);
         }
+
+    @GetMapping("/all")
+    public Iterable<Bikes> getAllBikes() {
+        return bikeRepository.findAll();
+    }
+
 
         @DeleteMapping("/{id}")
         public ResponseStatusException delBike(@PathVariable long id) {
