@@ -47,7 +47,7 @@ public class Controller {
     }
 
     @GetMapping("/bike/all/{page}")
-    public Iterable<Bikes> getAllBikesByName(@PathVariable int page) {
+    public Iterable<Bikes> getAllBikesSortedByName(@PathVariable int page) {
         Pageable sortedByName =
                 PageRequest.of(page, 3, Sort.by("name"));
         return bikeRepository.findAll(sortedByName);
