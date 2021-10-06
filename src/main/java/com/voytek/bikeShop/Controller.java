@@ -22,7 +22,7 @@ public class Controller {
     BikeRepository bikeRepository;
 
 
-    @PostMapping("/bike")
+    @PostMapping("/bike/new")
     public ResponseEntity<String> enterNewBike(@Valid @RequestBody Bikes bike) {
         Bikes newBike = bikeRepository.save(bike);
         long id = bike.getId();
@@ -94,6 +94,22 @@ public class Controller {
         });
         return bikeRepository.findById(id);
     }
+
+    @PutMapping("/bike/name/{name}")
+    public Optional<Bikes> modifyBikeByName(@Valid @RequestBody Bikes bikeMod, @PathVariable String name) {
+        if (!bikeRepository.existsByNameIgnoreCase(name)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
+        }
+        Bikes bike = bikeRepository.findByNameIgnoreCase(name);
+        bikeRepository.findById(bike.getId()).map(bikes -> {
+            bikes.setName(bikeMod.getName());
+            bikes.setPrice(bikeMod.getPrice());
+            bikes.setDescription(bikeMod.getDescription());
+            return bikeRepository.save(bikes);
+        });
+        return bikeRepository.findById(bike.getId());
+    }
+
 
 }
 
