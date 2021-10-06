@@ -41,7 +41,7 @@ public class Controller {
 
     @GetMapping("/bike/all")
     public Iterable<Bikes> getAllBikes() {
-        return bikeRepository.findAll();
+        return bikeRepository.findAllBikesSortedByPrice();
     }
 
     @GetMapping("/bike/all/{page}")
