@@ -11,7 +11,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 import javax.validation.Valid;
-import java.sql.*;
 import java.util.Optional;
 
 
@@ -34,8 +33,7 @@ public class Controller {
     @GetMapping("/bike/{id}")
     public Optional<Bikes> getBike(@PathVariable long id) {
         if (!bikeRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Bike not found for id = " + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for id = " + id);
         }
         return bikeRepository.findById(id);
     }
@@ -48,8 +46,7 @@ public class Controller {
 
     @GetMapping("/bike/all/{page}")
     public Iterable<Bikes> getAllBikesSortedByName(@PathVariable int page) {
-        Pageable sortedByName =
-                PageRequest.of(page, 3, Sort.by("name"));
+        Pageable sortedByName = PageRequest.of(page, 3, Sort.by("name"));
         return bikeRepository.findAll(sortedByName);
     }
 
@@ -75,8 +72,6 @@ public class Controller {
             bikes.setPrice(bikeMod.getPrice());
             bikes.setDescription(bikeMod.getDescription());
             return bikeRepository.save(bikes);
-
-
         });
         return bikeRepository.findById(id);
     }
