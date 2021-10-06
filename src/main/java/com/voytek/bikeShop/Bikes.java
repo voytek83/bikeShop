@@ -1,20 +1,13 @@
 package com.voytek.bikeShop;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.Hibernate;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Objects;
-
 
 @Entity(name = "bikeShop")
 @Table
 public class Bikes {
 
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
@@ -24,6 +17,9 @@ public class Bikes {
 
     @NotBlank
     private String description;
+
+
+    private int price;
 
     public Long getId() {
         return id;
@@ -49,33 +45,31 @@ public class Bikes {
         this.description = description;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
     public Bikes() {
     }
 
-    public Bikes(Long id, String name, String description) {
+    public Bikes(Long id, String name, String description, int price) {
         this.id = id;
         this.name = name;
         this.description = description;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Bikes bikes = (Bikes) o;
-        return Objects.equals(id, bikes.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
+        this.price = price;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "name = " + name + ", " +
-                "description = " + description + ")";
+        return "Bikes{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                '}';
     }
 }
