@@ -40,7 +40,7 @@ public class Controller {
 
 
     @GetMapping("/bike/all")
-    public Iterable<Bikes> getAllBikes() {
+    public Iterable<Bikes> getAllBikesSortedByPrice() {
         return bikeRepository.findAllBikesSortedByPrice();
     }
 
