@@ -50,6 +50,14 @@ public class Controller {
         return bikeRepository.findAll(sortedByName);
     }
 
+    @GetMapping("/bike/name/{name}")
+    public Bikes getBikeByName(@PathVariable String name) {
+        if (!bikeRepository.existsByNameIgnoreCase(name)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
+        }
+        return bikeRepository.findByNameIgnoreCase(name);
+    }
+
 
     @DeleteMapping("/bike/{id}")
     public String delBike(@PathVariable long id) {
@@ -57,6 +65,17 @@ public class Controller {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
             bikeRepository.deleteById(id);
+            return "bike deleted";
+        }
+    }
+
+    @DeleteMapping("/bike/name/{name}")
+    public String delBikeByName(@PathVariable String name) {
+        if (!bikeRepository.existsByNameIgnoreCase(name)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
+        } else {
+            Bikes bike = bikeRepository.findByNameIgnoreCase(name);
+            bikeRepository.deleteById(bike.getId()); //próbowałem tworzyć metodę deleteByName w repo, ale coś nie działało wtedy
             return "bike deleted";
         }
     }
