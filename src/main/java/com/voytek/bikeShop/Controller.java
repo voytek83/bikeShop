@@ -1,13 +1,7 @@
 package com.voytek.bikeShop;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 
 import javax.validation.Valid;
@@ -17,97 +11,63 @@ import java.util.Optional;
 @RestController
 public class Controller {
 
+    BikeService bikeService;
 
     @Autowired
-    BikeRepository bikeRepository;
-
+    public Controller(BikeService bikeService) {
+        this.bikeService = bikeService;
+    }
 
     @PostMapping("/bike/new")
-    public ResponseEntity<String> enterNewBike(@Valid @RequestBody Bikes bike) {
-        Bikes newBike = bikeRepository.save(bike);
-        long id = bike.getId();
-        return ResponseEntity.ok("{\"id\":" + id + "\n }");
-
+    public long addNewBike(@Valid @RequestBody Bike bike) {
+        return bikeService.addNewBike(bike);
     }
 
     @GetMapping("/bike/{id}")
-    public Optional<Bikes> getBike(@PathVariable long id) {
-        if (!bikeRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for id = " + id);
-        }
-        return bikeRepository.findById(id);
+    public Optional<Bike> getBike(@PathVariable long id) {
+        return bikeService.getBike(id);
     }
 
 
     @GetMapping("/bike/all")
-    public Iterable<Bikes> getAllBikesSortedByPrice() {
-        return bikeRepository.findAllBikesSortedByPrice();
+    public Iterable<Bike> getAllBikes() {
+        return bikeService.getAllBikes();
     }
 
     @GetMapping("/bike/all/{page}")
-    public Iterable<Bikes> getAllBikesSortedByName(@PathVariable int page) {
-        Pageable sortedByName = PageRequest.of(page, 3, Sort.by("name"));
-        return bikeRepository.findAll(sortedByName);
+    public Iterable<Bike> getAllBikesSortedByName(@PathVariable int page) {
+        return bikeService.getAllBikesSortedByName(page);
     }
 
     @GetMapping("/bike/name/{name}")
-    public Bikes getBikeByName(@PathVariable String name) {
-        if (!bikeRepository.existsByNameIgnoreCase(name)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
-        }
-        return bikeRepository.findByNameIgnoreCase(name);
+    public Bike getBikeByName(@PathVariable String name) {
+        return bikeService.getBikeByName(name);
     }
 
 
     @DeleteMapping("/bike/{id}")
     public String delBike(@PathVariable long id) {
-        if (!bikeRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } else {
-            bikeRepository.deleteById(id);
-            return "bike deleted";
-        }
+        return bikeService.delBike(id);
     }
 
     @DeleteMapping("/bike/name/{name}")
     public String delBikeByName(@PathVariable String name) {
-        if (!bikeRepository.existsByNameIgnoreCase(name)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
-        } else {
-            Bikes bike = bikeRepository.findByNameIgnoreCase(name);
-            bikeRepository.deleteById(bike.getId()); //próbowałem tworzyć metodę deleteByName w repo, ale coś nie działało wtedy
-            return "bike deleted";
-        }
+        return bikeService.delBikeByName(name);
     }
 
     @PutMapping("/bike/{id}")
-    public Optional<Bikes> modifyBike(@Valid @RequestBody Bikes bikeMod, @PathVariable long id) {
-        if (!bikeRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Bike not found for id = " + id);
-        }
-        bikeRepository.findById(id).map(bikes -> {
-            bikes.setName(bikeMod.getName());
-            bikes.setPrice(bikeMod.getPrice());
-            bikes.setDescription(bikeMod.getDescription());
-            return bikeRepository.save(bikes);
-        });
-        return bikeRepository.findById(id);
+    public Optional<Bike> modifyBike(@Valid @RequestBody Bike bikeMod, @PathVariable long id) {
+        return bikeService.modifyBike(bikeMod, id);
     }
 
     @PutMapping("/bike/name/{name}")
-    public Optional<Bikes> modifyBikeByName(@Valid @RequestBody Bikes bikeMod, @PathVariable String name) {
-        if (!bikeRepository.existsByNameIgnoreCase(name)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
-        }
-        Bikes bike = bikeRepository.findByNameIgnoreCase(name);
-        bikeRepository.findById(bike.getId()).map(bikes -> {
-            bikes.setName(bikeMod.getName());
-            bikes.setPrice(bikeMod.getPrice());
-            bikes.setDescription(bikeMod.getDescription());
-            return bikeRepository.save(bikes);
-        });
-        return bikeRepository.findById(bike.getId());
+    public Optional<Bike> modifyBikeByName(@Valid @RequestBody Bike bikeMod, @PathVariable String name) {
+        return bikeService.modifyBikeByName(bikeMod, name);
+    }
+
+    @GetMapping("/bike/price/{name}")
+    public int getBikePrice(@PathVariable String name) {
+        return bikeService.getBikePrice(name);
     }
 
 
