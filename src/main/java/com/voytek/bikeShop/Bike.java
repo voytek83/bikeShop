@@ -33,6 +33,9 @@ public class Bike {
 
     private List<Parts> partsList = new ArrayList<>();
 
+    @Transient
+    private int bikePrice;
+
     public Bike() {
     }
 
@@ -47,6 +50,14 @@ public class Bike {
         this.name = name;
         this.producer = producer;
         this.partsList = parts;
+    }
+
+    public Bike(Long id, String name, String producer, List<Parts> partsList, int bikePrice) {
+        this.id = id;
+        this.name = name;
+        this.producer = producer;
+        this.partsList = partsList;
+        this.bikePrice = bikePrice;
     }
 
     public Long getId() {
@@ -73,21 +84,30 @@ public class Bike {
         this.producer = producer;
     }
 
-    public List<Parts> getParts() {
+    public List<Parts> getPartsList() {
         return partsList;
     }
 
-    public void setParts(List<Parts> parts) {
-        this.partsList = parts;
+    public void setPartsList(List<Parts> partsList) {
+        this.partsList = partsList;
+    }
+
+    public int getBikePrice() {
+        return bikePrice;
+    }
+
+    public void setBikePrice(int bikePrice) {
+        this.bikePrice = bikePrice;
     }
 
     @Override
     public String toString() {
         return "Bike{" +
-                "bikeId=" + id +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", producer='" + producer + '\'' +
-                ", parts=" + partsList +
+                ", partsList=" + partsList +
+                ", bikePrice=" + bikePrice +
                 '}';
     }
 

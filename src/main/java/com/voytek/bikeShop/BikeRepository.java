@@ -11,6 +11,7 @@ import java.util.List;
 public interface BikeRepository extends PagingAndSortingRepository<Bike, Long> {
 
     Bike findByNameIgnoreCase(String name);
+    Bike findById(long id);
 
     boolean existsByNameIgnoreCase(String name);
     List<Bike> findByProducerIgnoreCase(String producer);

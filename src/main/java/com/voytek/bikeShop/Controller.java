@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 
 @RestController
@@ -26,15 +25,16 @@ public class Controller {
     }
 
     @GetMapping("/bike/{id}")
-    public Optional<Bike> getBike(@PathVariable long id) {
+    public Bike getBike(@PathVariable long id) {
         return bikeService.getBike(id);
     }
 
 
     @GetMapping("/bike/all")
     public Iterable<Bike> getAllBikes(){
-        return bikeService.getAllBikes();
+        return bikeService.getAllBikesPriced();
     }
+
 
     @GetMapping("/bike/producer/{producer}")
     public Iterable<Bike> getAllBikesByProducer(@PathVariable String producer){
@@ -63,12 +63,12 @@ public class Controller {
     }
 
     @PutMapping("/bike/{id}")
-    public Optional<Bike> modifyBike(@Valid @RequestBody Bike bikeMod, @PathVariable long id) {
+    public Bike modifyBike(@Valid @RequestBody Bike bikeMod, @PathVariable long id) {
         return bikeService.modifyBike(bikeMod, id);
     }
 
     @PutMapping("/bike/name/{name}")
-    public Optional<Bike> modifyBikeByName(@Valid @RequestBody Bike bikeMod, @PathVariable String name) {
+    public Bike modifyBikeByName(@Valid @RequestBody Bike bikeMod, @PathVariable String name) {
         return bikeService.modifyBikeByName(bikeMod, name);
     }
 
