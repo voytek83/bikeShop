@@ -1,35 +1,52 @@
 package com.voytek.bikeShop;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name="PARTS")
+@Table(name = "parts")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Parts {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long partId;
+    private long id;
 
+    @Column(nullable = false, unique = true)
     private String partName;
 
-    @ManyToOne()
-    @JoinColumn(name = "bike_id")
-    @JsonBackReference
-    private Bike bike;
-
     private int partPrice;
+
+
+    @ManyToMany(mappedBy = "partsList")
+    private List<Bike> bikeList = new ArrayList<>();
 
     public Parts() {
     }
 
-    public long getPartId() {
-        return partId;
+    public Parts(long id, String partName, int partPrice) {
+        this.id = id;
+        this.partName = partName;
+        this.partPrice = partPrice;
     }
 
-    public void setPartId(long partId) {
-        this.partId = partId;
+    public Parts(long id, String partName, int partPrice, List<Bike> bike) {
+        this.id = id;
+        this.partName = partName;
+        this.partPrice = partPrice;
+        this.bikeList = bike;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getPartName() {
@@ -40,14 +57,6 @@ public class Parts {
         this.partName = partName;
     }
 
-    public Bike getBike() {
-        return bike;
-    }
-
-    public void setBike(Bike bike) {
-        this.bike = bike;
-    }
-
     public int getPartPrice() {
         return partPrice;
     }
@@ -56,15 +65,26 @@ public class Parts {
         this.partPrice = partPrice;
     }
 
+    public List<Bike> getBike() {
+        return bikeList;
+    }
+
+    public void setBike(List<Bike> bike) {
+        this.bikeList = bike;
+    }
+
     @Override
     public String toString() {
         return "Parts{" +
-                "id=" + partId +
+                "partId=" + id +
                 ", partName='" + partName + '\'' +
-                ", bike=" + bike +
                 ", partPrice=" + partPrice +
+                ", bike=" + bikeList +
                 '}';
     }
 
-
+    //metody
+    public void addBikes(Bike bike) {
+        bikeList.add(bike);
+    }
 }

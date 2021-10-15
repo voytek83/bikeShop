@@ -25,14 +25,8 @@ public class BikeService {
 
     public long addNewBike(Bike bike) {
         Bike newBike = bikeRepository.save(bike);
-        long id = newBike.getBikeId();
-        List<Parts> partsList = newBike.getParts();
-        for (Parts part : partsList) {
-            part.setBike(newBike);
-            partsRepository.save(part);
-        }
-
-        return newBike.getBikeId();
+        long id = newBike.getId();
+        return newBike.getId();
     }
 
     public Optional<Bike> getBike(long id) {
@@ -49,6 +43,10 @@ public class BikeService {
 
     public Iterable<Bike> getAllBikes() {
         return bikeRepository.findAll();
+    }
+
+    public Iterable<Bike> getAllBikesByProducer(String producer) {
+        return bikeRepository.findByProducerIgnoreCase(producer);
     }
 
     public Bike getBikeByName(String name) {
@@ -72,7 +70,7 @@ public class BikeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
         } else {
             Bike bike = bikeRepository.findByNameIgnoreCase(name);
-            bikeRepository.deleteById(bike.getBikeId());
+            bikeRepository.deleteById(bike.getId());
             return "bike deleted";
         }
     }
@@ -84,7 +82,10 @@ public class BikeService {
         }
         bikeRepository.findById(id).map(bike -> {
             bike.setName(bikeMod.getName());
+            bike.setProducer(bikeMod.getProducer());
+            bike.setParts(bikeMod.getParts());
             return bikeRepository.save(bike);
+
         });
         return bikeRepository.findById(id);
     }
@@ -94,11 +95,13 @@ public class BikeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
         }
         Bike bike = bikeRepository.findByNameIgnoreCase(name);
-        bikeRepository.findById(bike.getBikeId()).map(bikes -> {
-            bikes.setName(bikeMod.getName());
-            return bikeRepository.save(bikes);
+        bikeRepository.findById(bike.getId()).map(bikeById -> {
+            bikeById.setName(bikeMod.getName());
+            bikeById.setProducer(bikeMod.getProducer());
+            bikeById.setParts(bikeMod.getParts());
+            return bikeRepository.save(bikeById);
         });
-        return bikeRepository.findById(bike.getBikeId());
+        return bikeRepository.findById(bike.getId());
     }
 
     public int getBikePrice(String name) {
@@ -110,6 +113,5 @@ public class BikeService {
         }
         return bikePrice;
     }
-
 
 }

@@ -12,10 +12,12 @@ import java.util.Optional;
 public class Controller {
 
     BikeService bikeService;
+    PartsService partsService;
 
     @Autowired
-    public Controller(BikeService bikeService) {
+    public Controller(BikeService bikeService, PartsService partsService) {
         this.bikeService = bikeService;
+        this.partsService = partsService;
     }
 
     @PostMapping("/bike/new")
@@ -30,8 +32,13 @@ public class Controller {
 
 
     @GetMapping("/bike/all")
-    public Iterable<Bike> getAllBikes() {
+    public Iterable<Bike> getAllBikes(){
         return bikeService.getAllBikes();
+    }
+
+    @GetMapping("/bike/producer/{producer}")
+    public Iterable<Bike> getAllBikesByProducer(@PathVariable String producer){
+        return bikeService.getAllBikesByProducer(producer);
     }
 
     @GetMapping("/bike/all/{page}")
