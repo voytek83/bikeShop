@@ -15,12 +15,10 @@ import java.util.Optional;
 @Service
 public class BikeService {
     BikeRepository bikeRepository;
-    PartsRepository partsRepository;
 
     @Autowired
     public BikeService(BikeRepository bikeRepository, PartsRepository partsRepository) {
         this.bikeRepository = bikeRepository;
-        this.partsRepository = partsRepository;
     }
 
     public long addNewBike(Bike bike) {
