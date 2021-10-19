@@ -31,7 +31,7 @@ public class BikeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for id = " + id);
         }
         Bike bike = bikeRepository.findById(id);
-        bike.setBikePrice(getBikePrice(bike.getName()));
+        bike.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bike.getName())));
         return bike;
 
     }
@@ -39,19 +39,19 @@ public class BikeService {
     public Iterable<Bike> getAllBikesSortedByName(int page) {
         Pageable sortedByName = PageRequest.of(page, 3, Sort.by("name"));
         Iterable<Bike> bikes = bikeRepository.findAll(sortedByName);
-        bikes.forEach(bike -> bike.setBikePrice(getBikePrice(bike.getName())));
+        bikes.forEach(bike -> bike.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bike.getName()))));
         return bikes;
     }
 
     public Iterable<Bike> getAllBikesPriced() {
         Iterable<Bike> bikes = bikeRepository.findAll();
-        bikes.forEach(bike -> bike.setBikePrice(getBikePrice(bike.getName())));
+        bikes.forEach(bike -> bike.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bike.getName()))));
         return bikes;
     }
 
     public Iterable<Bike> getAllBikesByProducer(String producer) {
         Iterable<Bike> bikes = bikeRepository.findByProducerIgnoreCase(producer);
-        bikes.forEach(bike -> bike.setBikePrice(getBikePrice(bike.getName())));
+        bikes.forEach(bike -> bike.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bike.getName()))));
         return bikes;
     }
 
@@ -60,7 +60,7 @@ public class BikeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
         }
         Bike bike = bikeRepository.findByNameIgnoreCase(name);
-        bike.setBikePrice(getBikePrice(bike.getName()));
+        bike.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bike.getName())));
         return bike;
     }
 
@@ -94,7 +94,7 @@ public class BikeService {
         bike.setPartsList(bikeMod.getPartsList());
         bikeRepository.save(bike);
         Bike bikeSaved = bikeRepository.findByNameIgnoreCase(bikeMod.getName());
-        bikeSaved.setBikePrice(getBikePrice(bikeMod.getName()));
+        bikeSaved.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bikeMod.getName())));
         return bikeSaved;
     }
 
@@ -108,18 +108,23 @@ public class BikeService {
         bike.setPartsList(bikeMod.getPartsList());
         bikeRepository.save(bike);
         Bike bikeSaved = bikeRepository.findByNameIgnoreCase(bikeMod.getName());
-        bikeSaved.setBikePrice(getBikePrice(bikeMod.getName()));
+        bikeSaved.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bikeMod.getName())));
         return bikeSaved;
     }
 
-    public int getBikePrice(String name) {
+    public static int getBikePrice(Bike bike) {
         int bikePrice = 0;
-        Bike bike = bikeRepository.findByNameIgnoreCase(name);
         List<Parts> partsList = bike.getPartsList();
         for (Parts part : partsList) {
             bikePrice += part.getPartPrice();
         }
         return bikePrice;
     }
+
+    public Bike findBikeByNameIgnoreCase(String name){
+        return bikeRepository.findByNameIgnoreCase(name);
+    }
+
+
 
 }

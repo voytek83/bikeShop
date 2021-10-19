@@ -74,7 +74,7 @@ public class Controller {
 
     @GetMapping("/bike/price/{name}")
     public int getBikePrice(@PathVariable String name) {
-        return bikeService.getBikePrice(name);
+        return bikeService.getBikePrice(bikeService.findBikeByNameIgnoreCase(name));
     }
 
 
