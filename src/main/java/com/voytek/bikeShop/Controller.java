@@ -51,6 +51,11 @@ public class Controller {
         return bikeService.getBikeByName(name);
     }
 
+    @GetMapping("/bike/regularCustomer/{name}")
+    public Bike getBikeByNameForRegularCustomer(@PathVariable String name) {
+        return bikeService.getBikeByNameForRegularCustomer(name);
+    }
+
 
     @DeleteMapping("/bike/{id}")
     public String delBike(@PathVariable long id) {

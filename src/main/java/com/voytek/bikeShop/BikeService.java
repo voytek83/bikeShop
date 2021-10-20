@@ -31,7 +31,9 @@ public class BikeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for id = " + id);
         }
         Bike bike = bikeRepository.findById(id);
-        bike.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bike.getName())));
+        var bikePrice = getBikePrice(findBikeByNameIgnoreCase(bike.getName()));
+        var taxedBikePrice = calculateBikePriceTaxed(bikePrice, TaxAndDiscounts.getTaxRate());
+        bike.setBikePrice(taxedBikePrice);
         return bike;
 
     }
@@ -39,19 +41,31 @@ public class BikeService {
     public Iterable<Bike> getAllBikesSortedByName(int page) {
         Pageable sortedByName = PageRequest.of(page, 3, Sort.by("name"));
         Iterable<Bike> bikes = bikeRepository.findAll(sortedByName);
-        bikes.forEach(bike -> bike.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bike.getName()))));
+        bikes.forEach(bike -> {
+            var bikePrice = getBikePrice(findBikeByNameIgnoreCase(bike.getName()));
+            var taxedBikePrice = calculateBikePriceTaxed(bikePrice, TaxAndDiscounts.getTaxRate());
+            bike.setBikePrice(taxedBikePrice);
+        });
         return bikes;
     }
 
     public Iterable<Bike> getAllBikesPriced() {
         Iterable<Bike> bikes = bikeRepository.findAll();
-        bikes.forEach(bike -> bike.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bike.getName()))));
+        bikes.forEach(bike -> {
+            var bikePrice = getBikePrice(findBikeByNameIgnoreCase(bike.getName()));
+            var taxedBikePrice = calculateBikePriceTaxed(bikePrice, TaxAndDiscounts.getTaxRate());
+            bike.setBikePrice(taxedBikePrice);
+        });
         return bikes;
     }
 
     public Iterable<Bike> getAllBikesByProducer(String producer) {
         Iterable<Bike> bikes = bikeRepository.findByProducerIgnoreCase(producer);
-        bikes.forEach(bike -> bike.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bike.getName()))));
+        bikes.forEach(bike -> {
+            var bikePrice = getBikePrice(findBikeByNameIgnoreCase(bike.getName()));
+            var taxedBikePrice = calculateBikePriceTaxed(bikePrice, TaxAndDiscounts.getTaxRate());
+            bike.setBikePrice(taxedBikePrice);
+        });
         return bikes;
     }
 
@@ -60,7 +74,9 @@ public class BikeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
         }
         Bike bike = bikeRepository.findByNameIgnoreCase(name);
-        bike.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bike.getName())));
+        var bikePrice = getBikePrice(findBikeByNameIgnoreCase(bike.getName()));
+        var taxedBikePrice = calculateBikePriceTaxed(bikePrice, TaxAndDiscounts.getTaxRate());
+        bike.setBikePrice(taxedBikePrice);
         return bike;
     }
 
@@ -94,7 +110,9 @@ public class BikeService {
         bike.setPartsList(bikeMod.getPartsList());
         bikeRepository.save(bike);
         Bike bikeSaved = bikeRepository.findByNameIgnoreCase(bikeMod.getName());
-        bikeSaved.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bikeMod.getName())));
+        var bikePrice = getBikePrice(findBikeByNameIgnoreCase(bikeMod.getName()));
+        var taxedBikePrice = calculateBikePriceTaxed(bikePrice, TaxAndDiscounts.getTaxRate());
+        bikeSaved.setBikePrice(taxedBikePrice);
         return bikeSaved;
     }
 
@@ -108,7 +126,9 @@ public class BikeService {
         bike.setPartsList(bikeMod.getPartsList());
         bikeRepository.save(bike);
         Bike bikeSaved = bikeRepository.findByNameIgnoreCase(bikeMod.getName());
-        bikeSaved.setBikePrice(getBikePrice(findBikeByNameIgnoreCase(bikeMod.getName())));
+        var bikePrice = getBikePrice(findBikeByNameIgnoreCase(bikeMod.getName()));
+        var taxedBikePrice = calculateBikePriceTaxed(bikePrice, TaxAndDiscounts.getTaxRate());
+        bikeSaved.setBikePrice(taxedBikePrice);
         return bikeSaved;
     }
 
@@ -129,6 +149,20 @@ public class BikeService {
         return bikePrice - bikePrice * discountInPercents / 100;
     }
 
+    public static int calculateBikePriceTaxed(int bikePrice, int taxRate) {
+        return bikePrice + bikePrice * taxRate / 100;
+    }
 
 
+    public Bike getBikeByNameForRegularCustomer(String name) {
+        if (!bikeRepository.existsByNameIgnoreCase(name)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bike not found for name = " + name);
+        }
+        Bike bike = bikeRepository.findByNameIgnoreCase(name);
+        var bikePrice = getBikePrice(findBikeByNameIgnoreCase(bike.getName()));
+        var taxedBikePrice = calculateBikePriceTaxed(bikePrice, TaxAndDiscounts.getTaxRate());
+        var discountedPrice = calculateBikePriceDiscounted(taxedBikePrice, TaxAndDiscounts.getReturningClientDiscount());
+        bike.setBikePrice(discountedPrice);
+        return bike;
+    }
 }
