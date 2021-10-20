@@ -121,8 +121,12 @@ public class BikeService {
         return bikePrice;
     }
 
-    public Bike findBikeByNameIgnoreCase(String name){
+    public Bike findBikeByNameIgnoreCase(String name) {
         return bikeRepository.findByNameIgnoreCase(name);
+    }
+
+    public static int calculateBikePriceDiscounted(int bikePrice, int discountInPercents) {
+        return bikePrice - bikePrice * discountInPercents / 100;
     }
 
 
