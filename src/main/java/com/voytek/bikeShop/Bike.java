@@ -26,7 +26,7 @@ public class Bike {
     private String producer;
 
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "bike_parts",
             joinColumns = @JoinColumn(name = "bike_id"),
             inverseJoinColumns = @JoinColumn(name = "parts_id"))
