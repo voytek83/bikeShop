@@ -49,7 +49,7 @@ public class Controller {
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=users_" + currentDateTime + ".csv";
+        String headerValue = "attachment; filename=bikes_" + currentDateTime + ".csv";
         response.setHeader(headerKey, headerValue);
 
         Iterable<Bike> bikeList = bikeService.getAllBikesPriced();
