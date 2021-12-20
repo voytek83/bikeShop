@@ -1,0 +1,16 @@
+version: "3"
+services:
+  db:
+    image: mysql
+    container_name: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=db_bikes
+  app:
+    image: bikeshop-docker:latest
+    container_name: bikeshop
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
