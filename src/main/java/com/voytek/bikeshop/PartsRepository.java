@@ -1,4 +1,4 @@
-package com.voytek.bikeShop;
+package com.voytek.bikeshop;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 

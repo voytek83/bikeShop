@@ -1,4 +1,4 @@
-package com.voytek.bikeShop;
+package com.voytek.bikeshop;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;

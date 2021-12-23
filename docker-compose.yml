@@ -7,10 +7,10 @@ services:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=db_bikes
   app:
-    image: bikeshop-docker:latest
-    container_name: bikeshop
+    build: .
     ports:
       - "8080:8080"
+      - "5005:5005"
     depends_on:
       - db
 

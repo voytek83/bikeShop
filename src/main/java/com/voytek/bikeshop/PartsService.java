@@ -1,4 +1,4 @@
-package com.voytek.bikeShop;
+package com.voytek.bikeshop;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,7 @@ public class PartsService {
 
     public long addNewPart(Parts parts) {
         Parts partNew = partsRepository.save(parts);
-        long id = partNew.getId();
-        return id;
+        return partNew.getId();
     }
 
 

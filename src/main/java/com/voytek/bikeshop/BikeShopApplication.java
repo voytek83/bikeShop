@@ -1,4 +1,4 @@
-package com.voytek.bikeShop;
+package com.voytek.bikeshop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
